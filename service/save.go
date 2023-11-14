@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/alejandrowaiz98/Golang-Middlewares/entitys"
 )
@@ -9,13 +10,30 @@ import (
 var iva_Argentina float64
 var iva_Chile float64
 
-func Save(b []entitys.Billet) {
+func (s *Service) Save(b []entitys.Billet) []error {
+
+	billets, errors := applyIva(b)
+
+	if len(errors) > 0 {
+		log.Printf("Founded %v errors when trying to apply iva", len(errors))
+		return errors
+	}
+
+	errors = s.db.Save(billets)
+
+	if len(errors) > 0 {
+		log.Printf("Founded %v errors when trying to save into database", len(errors))
+		return errors
+	}
+
+	return nil
 
 }
 
-func applyIva(billets []entitys.Billet) []error {
+func applyIva(billets []entitys.Billet) ([]entitys.Billet, []error) {
 
 	var errors []error
+	var iva float64
 
 	for _, b := range billets {
 
@@ -24,14 +42,14 @@ func applyIva(billets []entitys.Billet) []error {
 		case "Argentina":
 
 			for _, p := range b.Products {
-				iva := p.Original_Price * (iva_Argentina * 100)
+				iva = p.Original_Price * (iva_Argentina * 100)
 				p.Final_Price = p.Original_Price + iva
 			}
 
 		case "Chile":
 
 			for _, p := range b.Products {
-				iva := p.Original_Price * (iva_Chile * 100)
+				iva = p.Original_Price * (iva_Chile * 100)
 				p.Final_Price = p.Original_Price + iva
 			}
 
@@ -44,8 +62,10 @@ func applyIva(billets []entitys.Billet) []error {
 
 	}
 
-	//TODO: Add firestore logic to add to database
+	if len(errors) > 0 {
+		return nil, errors
+	}
 
-	return nil
+	return billets, nil
 
 }
