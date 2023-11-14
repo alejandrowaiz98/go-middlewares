@@ -1,17 +1,26 @@
 package http
 
 import (
-	"github.com/alejandrowaiz98/Golang-Middlewares/firestore"
+	"log"
+
+	"github.com/alejandrowaiz98/Golang-Middlewares/service"
 )
 
 type Http struct {
-	db firestore.FirestoreImplementation
+	s service.ServiceImplementation
 }
 
 type HttpImplementation interface {
 }
 
-func New(db firestore.FirestoreImplementation) HttpImplementation {
+func New() (HttpImplementation, error) {
 
-	return Http{db: db}
+	s, err := service.New()
+
+	if err != nil {
+		log.Printf("Err creating http client: %v", err)
+		return nil, err
+	}
+
+	return Http{s: s}, nil
 }
