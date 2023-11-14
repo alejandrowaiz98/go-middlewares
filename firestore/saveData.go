@@ -9,23 +9,32 @@ import (
 	"golang.org/x/net/context"
 )
 
-func (f *Firestore) Save(data []entitys.Billet) error {
+var collection string = os.Getenv("Firestore-Collections-name")
+
+func (f *Firestore) Save(data []entitys.Billet) []error {
 
 	ctx := context.Background()
+	var errors []error
 
-	for _, novel := range data {
+	for _, billet := range data {
 
-		_, _, err := f.client.Collection(os.Getenv("Firestore-Collections-name")).Add(ctx, novel)
+		_, _, err := f.client.Collection(collection).Add(ctx, billet)
 
 		if err != nil {
 			log.Printf(("Firestore | ERROR) Err: %v"), err)
-			return err
+			errors = append(errors, err)
 		}
 
 		fmt.Println("¡Data saved into database!")
 
 	}
 
-	return nil
+	if len(errors) == 0 {
+
+		return nil
+
+	}
+
+	return errors
 
 }

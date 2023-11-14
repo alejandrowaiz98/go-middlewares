@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"cloud.google.com/go/firestore"
+	"github.com/alejandrowaiz98/Golang-Middlewares/entitys"
 	"google.golang.org/api/option"
 )
 
@@ -14,6 +15,7 @@ type Firestore struct {
 }
 
 type FirestoreImplementation interface {
+	Save(data []entitys.Billet) []error
 }
 
 func New() (FirestoreImplementation, error) {
