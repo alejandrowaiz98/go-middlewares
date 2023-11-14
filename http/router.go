@@ -9,8 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (http *Http) Run() {
+
+	r := gin.Default()
+
+	r.Use(validateHeaders())
+
+	port := ":8989"
+
+	log.Printf("Running in port%v", port)
+
+	r.Run(port)
+
+}
+
 // ValidateHeaders validate corp headers
-func (h *Http) validateHeaders() gin.HandlerFunc {
+func validateHeaders() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		headers := strings.Split(os.Getenv("Headers"), ",")
