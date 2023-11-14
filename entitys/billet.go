@@ -1,12 +1,12 @@
 package entitys
 
 type Billet struct {
-	TotalPrice int
-	Products   []Product
-	Country    string
+	TotalPrice     float64
+	Products       []Product
+	Origin_Country string
 }
 
 type Product struct {
-	Name, Description string
-	Price             int
+	Name, Description           string
+	Original_Price, Final_Price float64
 }
