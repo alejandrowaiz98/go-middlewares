@@ -7,10 +7,11 @@ import (
 )
 
 type Http struct {
-	s service.ServiceImplementation
+	service service.ServiceImplementation
 }
 
 type HttpImplementation interface {
+	Run()
 }
 
 func New() (HttpImplementation, error) {
@@ -22,5 +23,5 @@ func New() (HttpImplementation, error) {
 		return nil, err
 	}
 
-	return Http{s: s}, nil
+	return &Http{service: s}, nil
 }

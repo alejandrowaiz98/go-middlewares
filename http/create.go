@@ -3,12 +3,13 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/alejandrowaiz98/Golang-Middlewares/entitys"
 	"github.com/gin-gonic/gin"
 )
 
-func Save(ctx *gin.Context) {
+func (h *Http) Save(ctx *gin.Context) {
 
 	var reqBody []entitys.Billet
 
@@ -18,9 +19,23 @@ func Save(ctx *gin.Context) {
 
 		err = fmt.Errorf("[ Http | Save | Decode ] error: %v", err)
 
+		log.Println(err)
+
 		ctx.JSON(400, gin.H{"error": err.Error()})
 
 		return
+
+	}
+
+	errors := h.service.Save(reqBody)
+
+	if len(errors) > 0 {
+
+		err = fmt.Errorf("[ Http | Save | Servuce ] error: %v", err)
+
+		log.Println(err)
+
+		ctx.JSON(400, gin.H{"error": err.Error()})
 
 	}
 
