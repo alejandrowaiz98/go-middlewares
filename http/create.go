@@ -13,6 +13,8 @@ func (h *Http) Save(ctx *gin.Context) {
 
 	var reqBody []entitys.Billet
 
+	log.Println(ctx.Request.Body)
+
 	err := json.NewDecoder(ctx.Request.Body).Decode(&reqBody)
 
 	if err != nil {
@@ -31,11 +33,9 @@ func (h *Http) Save(ctx *gin.Context) {
 
 	if len(errors) > 0 {
 
-		err = fmt.Errorf("[ Http | Save | Servuce ] error: %v", err)
+		err = fmt.Errorf("[ Http | Save | Servuce ] errors: %v", errors)
 
-		log.Println(err)
-
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		ctx.JSON(400, gin.H{"errors": errors})
 
 	}
 
