@@ -3,22 +3,21 @@ package firestore
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/alejandrowaiz98/Golang-Middlewares/entitys"
 	"golang.org/x/net/context"
 )
-
-var collection string = os.Getenv("Firestore-Collections-name")
 
 func (f *Firestore) Save(data []entitys.Billet) []error {
 
 	ctx := context.Background()
 	var errors []error
 
+	log.Printf("data from frontend :%v", data)
+
 	for _, billet := range data {
 
-		_, _, err := f.client.Collection(collection).Add(ctx, billet)
+		_, _, err := f.client.Collection(f.collection).Add(ctx, &billet)
 
 		if err != nil {
 			log.Printf(("Firestore | ERROR) Err: %v"), err)

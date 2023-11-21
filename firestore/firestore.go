@@ -11,16 +11,21 @@ import (
 )
 
 type Firestore struct {
-	client *firestore.Client
+	client     *firestore.Client
+	collection string
 }
 
 type FirestoreImplementation interface {
 	Save(data []entitys.Billet) []error
 }
 
+var col string
+
 func New() (FirestoreImplementation, error) {
 
 	ctx := context.Background()
+
+	col = os.Getenv("firestore_collections_name")
 
 	client, err := firestore.NewClient(ctx, os.Getenv("firestore_project_id"), option.WithCredentialsFile(os.Getenv("service_account_filepath")))
 
@@ -29,6 +34,6 @@ func New() (FirestoreImplementation, error) {
 		return nil, err
 	}
 
-	return &Firestore{client: client}, nil
+	return &Firestore{client: client, collection: col}, nil
 
 }
